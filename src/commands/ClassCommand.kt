@@ -1,6 +1,7 @@
 package commands
 
-import caching.Cache
+import config.Cache
+import config.Config
 
 class ClassCommand: APICommand {
     override val name: String
@@ -12,7 +13,7 @@ class ClassCommand: APICommand {
     override val endpoint: String
         get() = "/api/classes/"
 
-    override fun execute(params: Array<String>, cache: Cache) {
+    override fun execute(params: Array<String>, config: Config) {
         TODO("Not yet implemented")
     }
 }

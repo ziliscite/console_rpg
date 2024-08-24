@@ -1,7 +1,7 @@
-package helper
+package helpers
 
 import SERVER
-import caching.Cache
+import config.Cache
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
@@ -37,8 +37,8 @@ object CommandHandler {
     }
 
     private val client = OkHttpClient()
-    private fun getRequest(endpoint: String): Result<String> {
-        val request = Request.Builder().get().url(SERVER +endpoint).build()
+    fun getRequest(endpoint: String): Result<String> {
+        val request = Request.Builder().get().url(SERVER+endpoint).build()
         val response = client.newCall(request).execute()
         val responseBody = response.body?.string()
 
@@ -55,6 +55,8 @@ object CommandHandler {
         // if haven't, we can print("."), if its ready, then we stop
         // ye max print would be 3 times, but after that, it will stuck there
         // instead of changing line
+
+        // my ass
         for (i in 0..2) {
             Thread.sleep(500)
             print(".")

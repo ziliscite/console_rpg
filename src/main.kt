@@ -1,7 +1,6 @@
-import caching.Cache
-import commands.Commands
-import commands.ExitCommand
-import commands.RaceCommand
+import config.Cache
+import commands.*
+import config.Config
 import java.util.Locale
 
 /*
@@ -13,6 +12,7 @@ const val SERVER = "https://www.dnd5eapi.co"
 fun instantiate(allCommands: Commands) {
     allCommands.addCommand(ExitCommand())
     allCommands.addCommand(RaceCommand())
+    allCommands.addCommand(SetUserCommand())
 }
 
 fun main() {
@@ -20,6 +20,7 @@ fun main() {
     instantiate(allCommands)
 
     val cache = Cache()
+    val config = Config(cache, null)
 
     while (true) {
         print("console > ")
@@ -29,7 +30,7 @@ fun main() {
         val result = allCommands.getCommand(command.first)
         result.onSuccess {
             try {
-                it.execute(command.second, cache)
+                it.execute(command.second, config)
             } catch (e: Exception) {
                 println("${command.first}: ${e.message}")
             }

@@ -1,4 +1,4 @@
-package caching
+package config
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

@@ -1,11 +1,11 @@
 package commands
 
-import caching.Cache
+import config.Config
 
 interface Command {
     val name: String
     val description: String
-    fun execute(params: Array<String>, cache: Cache)
+    fun execute(params: Array<String>, config: Config)
 }
 
 interface APICommand: Command {

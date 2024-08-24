@@ -1,6 +1,7 @@
 package commands
 
-import caching.Cache
+import config.Cache
+import config.Config
 import kotlin.system.exitProcess
 
 class ExitCommand: Command {
@@ -10,7 +11,7 @@ class ExitCommand: Command {
     override val description: String
         get() = "exit the program"
 
-    override fun execute(params: Array<String>, cache: Cache) {
+    override fun execute(params: Array<String>, config: Config) {
         exitProcess(0)
     }
 }

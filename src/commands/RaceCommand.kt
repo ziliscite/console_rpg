@@ -1,8 +1,8 @@
 package commands
 
-import caching.Cache
-import helper.CommandHandler
-import helper.CommandSerializer
+import config.Config
+import helpers.CommandHandler
+import helpers.CommandSerializer
 import serializers.*
 
 class RaceCommand: APICommand {
@@ -17,7 +17,7 @@ class RaceCommand: APICommand {
 
     private val validSub = arrayOf("list", "detail")
 
-    override fun execute(params: Array<String>, cache: Cache) {
+    override fun execute(params: Array<String>, config: Config) {
         validateParams(params)
 
         val sub = params[0]
@@ -29,11 +29,11 @@ class RaceCommand: APICommand {
             callback = this::displayRace
         }
 
-        if (cache.displayFromCache(route, callback)) {
+        if (config.cache.displayFromCache(route, callback)) {
             return
         }
 
-        CommandHandler.handle(route, cache, callback)
+        CommandHandler.handle(route, config.cache, callback)
     }
 
     private fun validateParams(params: Array<String>) {
@@ -51,37 +51,16 @@ class RaceCommand: APICommand {
     }
 
     private fun displayRace(response: String) {
-        val race = CommandSerializer.displayResponse<Race>(response)
-
-        println("Race: ${race.name}")
-        println("URL: ${race.url}")
-        println("Age: ${race.age}")
-        println("Alignment: ${race.alignment}")
-        println("Speed: ${race.speed}")
-
-        println("Traits: ")
-        for (trait in race.traits) {
-            println("\tTrait: ${trait.name}")
-        }
-
-        println("Ability Bonuses: ")
-        for (bonus in race.abilityBonuses) {
-            println("\tBonus: ${bonus.bonus} ${bonus.abilityScore.name}")
-        }
-
-        println("Sub Races: ")
-        for (sub in race.subRaces) {
-            println("\tSub Race: ${sub.name}")
-        }
+        val race = CommandSerializer.getResponse<Race>(response)
+        race.display()
     }
 
     private fun displayAll(response: String) {
-        val races = CommandSerializer.displayResponse<Races>(response)
+        val races = CommandSerializer.getResponse<Races>(response)
 
         println("Races: ")
         for (race in races.races) {
-            println("\tRace: ${race.name}")
-            println("\tURL: ${race.url}")
+            println("\t- Race: ${race.name}")
         }
     }
 }

@@ -19,11 +19,11 @@ data class Races(@SerializedName("results") val races: Array<RaceName>) {
 }
 
 data class Race(
-    val name: String, val url: String, val speed: Int,
-    val age: String, val alignment: String,
-    @SerializedName("ability_bonuses") val abilityBonuses: Array<AbilityBonus>,
-    val traits: Array<Trait>,
-    @SerializedName("subraces") val subRaces: Array<SubRace>
+    val name: String?, val url: String?, val speed: Int?,
+    val age: String?, val alignment: String?,
+    @SerializedName("ability_bonuses") val abilityBonuses: Array<AbilityBonus>?,
+    val traits: Array<Trait>?,
+    @SerializedName("subraces") val subRaces: Array<SubRace>?
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -40,9 +40,32 @@ data class Race(
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + speed
+        result = 31 * result + speed!!
         result = 31 * result + abilityBonuses.contentHashCode()
         return result
+    }
+
+    fun display() {
+        println("Race: ${this.name}")
+        println(" - URL: ${this.url}")
+        println(" - Age: ${this.age}")
+        println(" - Alignment: ${this.alignment}")
+        println(" - Speed: ${this.speed}")
+
+        println(" - Traits: ")
+        for (trait in this.traits!!) {
+            println("\t- Trait: ${trait.name}")
+        }
+
+        println(" - Ability Bonuses: ")
+        for (bonus in this.abilityBonuses!!) {
+            println("\t- Bonus: ${bonus.bonus} ${bonus.abilityScore.name}")
+        }
+
+        println(" - Sub Races: ")
+        for (sub in this.subRaces!!) {
+            println("\t- Sub Race: ${sub.name}")
+        }
     }
 }
 
