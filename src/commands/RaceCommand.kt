@@ -10,7 +10,7 @@ class RaceCommand: APICommand {
         get() = "race"
 
     override val description: String
-        get() = "list all races or select a race"
+        get() = "list all races or select a race to display"
 
     override val endpoint: String
         get() = "/api/races/"
@@ -29,7 +29,10 @@ class RaceCommand: APICommand {
             callback = this::displayRace
         }
 
-        cache.displayFromCache(route, callback)
+        if (cache.displayFromCache(route, callback)) {
+            return
+        }
+
         CommandHandler.handle(route, cache, callback)
     }
 
