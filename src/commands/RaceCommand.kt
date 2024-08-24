@@ -2,7 +2,7 @@ package commands
 
 import caching.Cache
 import helper.CommandHandler
-import helper.Serializer
+import helper.CommandSerializer
 import serializers.*
 
 class RaceCommand: APICommand {
@@ -22,22 +22,15 @@ class RaceCommand: APICommand {
 
         val sub = params[0]
         var route = endpoint
+        var callback: (String) -> Unit = this::displayAll
 
         if (sub == "detail") {
             route += params[1]
-
-/*            val response = cache.getCache(route)
-            if (response != null) {
-                displayRace(response)
-
-                return
-            }*/
-
-            CommandHandler.handle(route, this::displayRace)
-            return
+            callback = this::displayRace
         }
 
-        CommandHandler.handle(route, this::displayAll)
+        cache.displayFromCache(route, callback)
+        CommandHandler.handle(route, cache, callback)
     }
 
     private fun validateParams(params: Array<String>) {
@@ -54,12 +47,8 @@ class RaceCommand: APICommand {
         }
     }
 
-    private fun getResponse(response: String): String {
-        return response
-    }
-
     private fun displayRace(response: String) {
-        val race = Serializer.displayResponse<Race>(response)
+        val race = CommandSerializer.displayResponse<Race>(response)
 
         println("Race: ${race.name}")
         println("URL: ${race.url}")
@@ -84,7 +73,7 @@ class RaceCommand: APICommand {
     }
 
     private fun displayAll(response: String) {
-        val races = Serializer.displayResponse<Races>(response)
+        val races = CommandSerializer.displayResponse<Races>(response)
 
         println("Races: ")
         for (race in races.races) {

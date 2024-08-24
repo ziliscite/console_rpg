@@ -3,7 +3,7 @@ package helper
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-object Serializer {
+object CommandSerializer {
     val gson = Gson()
     /*
     fun <T> serialize(response: String, template: Class<T>) {

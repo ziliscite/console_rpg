@@ -1,6 +1,7 @@
 package helper
 
 import SERVER
+import caching.Cache
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
@@ -8,20 +9,30 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 object CommandHandler {
-    // cachenya dipass lewat handle function, bukan callbacknya
-        // ya, callbacknya juga harus dikasih parameter cache sih buat dipass dari handle
-    fun handle(route: String, callback: (String) -> Unit) {
+    fun handle(route: String, cache: Cache, callback: (String) -> Unit) {
         runBlocking {
             launch {
                 yield()
-                val response = getRequest(endpoint = route)
-                handleResult(response, callback)
+                handleResponse(route, cache, callback)
             }
 
             launch {
                 loading()
                 yield()
             }
+        }
+    }
+
+    private fun handleResponse(route: String, cache: Cache, callback: (String) -> Unit){
+        getRequest(endpoint = route).onSuccess {
+            try {
+                cacheResponse(route, it, cache)
+                callback(it)
+            } catch (e: Exception) {
+                println("${e.message}")
+            }
+        }.onFailure {
+            println("${it.message}")
         }
     }
 
@@ -51,15 +62,7 @@ object CommandHandler {
         println()
     }
 
-    private fun handleResult(result: Result<String>, callback: (String) -> Unit) {
-        result.onSuccess {
-            try {
-                callback(it)
-            } catch (e: Exception) {
-                println("Caught an error: ${e.message}")
-            }
-        }.onFailure {
-            println("Caught an error: ${it.message}")
-        }
+    private fun cacheResponse(route: String, response: String, cache: Cache) {
+        cache.addCache(route, response)
     }
 }

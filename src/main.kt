@@ -31,10 +31,10 @@ fun main() {
             try {
                 it.execute(command.second, cache)
             } catch (e: Exception) {
-                println("Caught an error: ${e.message}")
+                println("${command.first}: ${e.message}")
             }
         }.onFailure {
-            println("Caught an error: ${it.message}")
+            println("${it.message}")
         }
     }
 }
